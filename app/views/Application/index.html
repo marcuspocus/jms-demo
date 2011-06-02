@@ -15,31 +15,28 @@ $(document).ready(function(){
 	socket.onopen = function(event){
 		socket.send("Connected...");
 	}
-
+	
 	socket.onclose = function(event){
-		console.log("WebSocket is closed");
-	}
-
-	socket.onerror = function(event){
-		console.log("WebSocket error: " + event);
+		console.log("close...");
+		document.location = "@@{Application.index()}";
 	}
 
 	// Display a message
 	var display = function(event) {
-		console.log("display...");
+		//console.log("display...");
 	    $('#thread').append('<p>' + event + '</p>');
 	    $('#thread').scrollTo('max');
 	}
   	
     $('#send').click(function(e) {
-		console.log("#send->click()");
+		//console.log("#send->click()");
         var message = $('#message').val();
         $('#message').val('');
         socket.send(message);
     });
    
     $('#message').keypress(function(e) {
-		console.log("#message->enter");
+		//console.log("#message->enter");
         if(e.charCode == 13 || e.keyCode == 13) {
             $('#send').click();
             e.preventDefault();

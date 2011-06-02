@@ -5,6 +5,7 @@ import static play.libs.F.Matcher.Equals;
 import static play.mvc.Http.WebSocketEvent.SocketClosed;
 import static play.mvc.Http.WebSocketEvent.TextFrame;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -24,9 +25,6 @@ import play.mvc.WebSocketController;
 
 public class Application extends Controller {
 
-
-	static final EventStream<String> stream = new EventStream<String>(100);
-
 	public static void index() {
 		render();
 	}
@@ -34,7 +32,7 @@ public class Application extends Controller {
 	public void onMessage(final String msg) {
 		Logger.info("Message received in JMS...");
 		try {
-			stream.publish("Via JMS => " + msg);
+			WebSocket.stream.publish("Via JMS => " + msg);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -42,8 +40,10 @@ public class Application extends Controller {
 
 	public static class WebSocket extends WebSocketController {
 
-		@Named("chat")
-		static JmsTemplate jms;
+		public static final EventStream<String> stream = new EventStream<String>(100);
+
+		@Inject
+		public static JmsTemplate jms;
 
 		public static void echo() {
 
@@ -56,7 +56,10 @@ public class Application extends Controller {
 				}
 
 				for (final String msg : TextFrame.match(e._1)) {
-					jms.send("chat", new MessageCreator() {
+					Logger.info("msg: %s", msg);
+					jms.setPubSubDomain(true);
+					jms.setDefaultDestinationName("chat");
+					jms.send(new MessageCreator() {
 						public Message createMessage(Session session) throws JMSException {
 							return session.createTextMessage(msg);
 						}

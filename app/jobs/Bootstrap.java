@@ -22,7 +22,7 @@ public class Bootstrap extends Job<Void> {
 				
 				@Override
 				public void configure() throws Exception {
-					from("activemq:queue:chat").id("chat").bean(Application.class, "onMessage");
+					from("activemq:topic:chat").id("chat").bean(Application.class, "onMessage");
 				}
 				
 			};

@@ -17,6 +17,9 @@ bc. RouteBuilder routes = new RouteBuilder(){
 	}
 }
 
+* @MyListener.class@ is a standard class implementing @javax.jms.MessageListener@
+* @Application.class@ is any class, the onMessage method just have a String parameter: The body of the @javax.jms.TextMessage@ will be transformed to a String.
+
 bq. Read "Camel: Routes":http://camel.apache.org/routes.html for more details about routes.
 
 The add routes to @CamelContext@ which will manage @ListenerContainer@.

@@ -2,7 +2,7 @@ h1. README for this demo
 
 h2. jms-demo for Play! Framework
 
-Based on "Camel module for Play!":https://github.com/marcuspocus/camel [1]
+Based on "Camel module for Play!":https://github.com/marcuspocus/play-camel [1]
 
 bq. Don't forget to run @play deps --sync@ before running the app !
 

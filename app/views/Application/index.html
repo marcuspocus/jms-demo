@@ -1,0 +1,58 @@
+#{extends 'main.html' /}
+#{set title:'JMS DEMO' /}
+
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+
+	// Create a socket
+	var socket = new WebSocket('@@{Application.WebSocket.echo()}');
+   
+	// Message received on the socket
+	socket.onmessage = function(event) {
+	    display(event.data);
+	}
+
+	socket.onopen = function(event){
+		socket.send("Connected...");
+	}
+
+	socket.onclose = function(event){
+		console.log("WebSocket is closed");
+	}
+
+	socket.onerror = function(event){
+		console.log("WebSocket error: " + event);
+	}
+
+	// Display a message
+	var display = function(event) {
+		console.log("display...");
+	    $('#thread').append('<p>' + event + '</p>');
+	    $('#thread').scrollTo('max');
+	}
+  	
+    $('#send').click(function(e) {
+		console.log("#send->click()");
+        var message = $('#message').val();
+        $('#message').val('');
+        socket.send(message);
+    });
+   
+    $('#message').keypress(function(e) {
+		console.log("#message->enter");
+        if(e.charCode == 13 || e.keyCode == 13) {
+            $('#send').click();
+            e.preventDefault();
+        }
+    });
+
+});
+</script>
+
+<div id="newMessage">
+    <input type="text" id="message" autocomplete="off">
+    <input type="submit" value="send" id="send">
+</div>
+
+<div id="thread">
+</div>

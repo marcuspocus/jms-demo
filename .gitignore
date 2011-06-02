@@ -1,0 +1,10 @@
+.classpath
+.project
+.settings
+activemq-data
+eclipse
+lib
+modules
+precompiled
+test-result
+tmp

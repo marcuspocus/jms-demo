@@ -12,10 +12,12 @@ View the @Bootstrap@ class to learn how to create routes
 
 bc. RouteBuilder routes = new RouteBuilder(){
 	public void configure() throws Exception{
-		from("activemq:queue:chat").id("chat").bean(Application.class, "onMessage");
+		from("activemq:queue:myListener").id("chat").bean(MyListener.class);
 		from("activemq:topic:chat").id("chat").bean(Application.class, "onMessage");
 	}
 }
+
+bq. Read "Camel: Routes":http://camel.apache.org/routes.html for more details about routes.
 
 The add routes to @CamelContext@ which will manage @ListenerContainer@.
 
@@ -25,6 +27,10 @@ You get access to @CamelContext@ using Injection
 
 bc. @Inject static CamelContext ctx;
 
-To send messages from @Controllers@, @Jobs@, or @Mailer@ classes, you have access to @JmsTemplate@
+To send messages from @Controllers@, @Jobs@, or @Mailer@ classes, you have access to @JmsTemplate@ via @Inject annotation:
+
+bc. @Inject private static JmsTemplate jms;
+
+bq. To send to a topic don't forget to set: @jms.setPubSubDomain(true)@
 
 fn1. Not yet released on Play! modules repository

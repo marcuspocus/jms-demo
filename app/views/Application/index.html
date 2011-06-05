@@ -1,5 +1,5 @@
 #{extends 'main.html' /}
-#{set title:'JMS DEMO' /}
+#{set title:'JMS DEMO | Chat' /}
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
@@ -17,28 +17,45 @@ $(document).ready(function(){
 	}
 	
 	socket.onclose = function(event){
-		console.log("close...");
-		document.location = "@@{Application.index()}";
+		document.location = "@@{Secure.logout()}";
 	}
 
 	// Display a message
 	var display = function(event) {
-		//console.log("display...");
-	    $('#thread').append('<p>' + event + '</p>');
+		var data = JSON.parse(event);
+	    $('#thread').append('<p>[' + data.timestamp + ' : '+ padr(data.user, ' ', 300) + ']  ' + data.msg + '</p>');
 	    $('#thread').scrollTo('max');
 	}
+	
+	var padr = function(s, c, n) {
+	    if (! s || ! c || s.length >= n) {
+	        return s;
+	    }
+
+	    var max = (n - s.length)/c.length;
+	    for (var i = 0; i < max; i++) {
+	        s += c;
+	    }
+
+	    return s;
+	}
+	
   	
-    $('#send').click(function(e) {
-		//console.log("#send->click()");
+    $('#sendJms').click(function(e) {
         var message = $('#message').val();
         $('#message').val('');
         socket.send(message);
     });
    
+    $('#sendDirect').click(function(e) {
+        var message = $('#message').val();
+        $('#message').val('');
+		$.post('@{Application.sendDirect()}', {msg:message});
+    });
+
     $('#message').keypress(function(e) {
-		//console.log("#message->enter");
         if(e.charCode == 13 || e.keyCode == 13) {
-            $('#send').click();
+            $('#sendJms').click();
             e.preventDefault();
         }
     });
@@ -46,10 +63,21 @@ $(document).ready(function(){
 });
 </script>
 
-<div id="newMessage">
-    <input type="text" id="message" autocomplete="off">
-    <input type="submit" value="send" id="send">
-</div>
+<nav id="menu">
+	<ul>
+		<li class="selected">#{a @Application.index()}Chat#{/a}</li>
+		<li>#{a @Application.history()}History#{/a}</li>
+		<li>#{a @Secure.logout()}Logout#{/a}</li>
+		<li>Welcome ${session.get('username').capAll()}!</li>
+	</ul>
+</nav>
 
 <div id="thread">
+</div>
+
+<div id="newMessage">
+    <input type="text" id="message" autocomplete="off">
+	<br />
+    <input type="submit" value="Send via WebSocket" id="sendJms">
+    <input type="submit" value="Send via Direct Endpoint" id="sendDirect">
 </div>

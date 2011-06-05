@@ -4,7 +4,8 @@
 
 # Home page
 GET     /                                       Application.index
-
+GET     /history                                Application.history
+POST	/sendDirect								Application.sendDirect
 
 WS		/echo									Application.WebSocket.echo
 
@@ -14,6 +15,8 @@ GET     /favicon.ico                            404
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
+
+*		/										module:secure
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

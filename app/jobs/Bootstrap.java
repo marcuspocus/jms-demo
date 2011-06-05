@@ -5,10 +5,9 @@ import javax.inject.Inject;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 
-import controllers.Application;
-
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
+import controllers.Application;
 
 @OnApplicationStart
 public class Bootstrap extends Job<Void> {
@@ -22,7 +21,11 @@ public class Bootstrap extends Job<Void> {
 				
 				@Override
 				public void configure() throws Exception {
+
+					from("direct:chat").id("direct_chat").to("activemq:topic:chat");
+					
 					from("activemq:topic:chat").id("chat").bean(Application.class, "onMessage");
+					
 				}
 				
 			};

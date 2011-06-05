@@ -1,0 +1,22 @@
+#{extends 'main.html' /}
+#{set title:'JMS DEMO | History' /}
+
+<nav id="menu">
+	<ul>
+		<li>#{a @Application.index()}Chat#{/a}</li>
+		<li class="selected">#{a @Application.history()}History#{/a}</li>
+		<li>#{a @Secure.logout()}Logout#{/a}</li>
+		<li>Welcome ${session.get('username').capAll()}!</li>
+	</ul>
+</nav>
+
+<div id="thread">
+	#{list msgs, as:'msg'}
+		#{msg msg /}
+	#{/list}	
+</div>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+	$('#thread').scrollTo('max');
+});	
+</script>
